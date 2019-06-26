@@ -14,9 +14,9 @@ class Elsi(CMakePackage):
     codes to a variety of eigenvalue solvers."""
 
     homepage = "https://wordpress.elsi-interchange.org/"
-    url      = "http://wordpress.elsi-interchange.org/wp-content/uploads/2019/03/elsi-2.2.1.tar.gz"
+    url      = "http://wordpress.elsi-interchange.org/wp-content/uploads/2019/06/elsi-2.3.0.tar.gz"
 
-    version('2.2.1', sha256='5b4b2e8fa4b3b68131fe02cc1803a884039b89a1b1138af474af66453bec0b4d')
+    version('2.3.0', sha256='f2fad2a16c8e8c7f54f87753b34e2eecea074416251620268a7633272646ce92')
 
     # Variants (translation of cmake options)
     variant(
@@ -34,11 +34,11 @@ class Elsi(CMakePackage):
         'enable_sips', default=False, description='Enable SLEPc-SIPs support'
     )
     variant(
-        'use_external_elpa', default=False,
+        'use_external_elpa', default=True,
         description="Build ELPA using SPACK"
     )
     variant(
-        'use_external_ntpoly', default=False,
+        'use_external_ntpoly', default=True,
         description="Build NTPoly using SPACK"
     )
     variant(
@@ -46,8 +46,8 @@ class Elsi(CMakePackage):
         description="Use external libOMM and MatrixSwitch"
     )
     variant(
-        'use_external_superlu', default=False,
-        description="Use external SuperLU DIST"
+        'use_external_pexsi', default=True,
+        description="Use external PEXSI"
     )
     variant(
         'use_mpi_iallgather', default=True,
@@ -66,7 +66,7 @@ class Elsi(CMakePackage):
     depends_on('ntpoly', when='+use_external_ntpoly')
     depends_on('slepc', when='+enable_sips')
     depends_on('petsc', when='+enable_sips')
-    depends_on('superlu-dist', when='+use_external_superlu')
+    depends_on('pexsi', when='+use_external_pexsi')
 
     def cmake_args(self):
         from os.path import dirname
@@ -100,8 +100,8 @@ class Elsi(CMakePackage):
             args += ["-DUSE_EXTERNAL_NTPOLY=ON"]
         if '+use_external_omm' in self.spec:
             args += ["-DUSE_EXTERNAL_OMM=ON"]
-        if '+use_external_superlu' in self.spec:
-            args += ["-DUSE_EXTERNAL_SUPERLU=ON"]
+        if '+use_external_pexsi' in self.spec:
+            args += ["-DUSE_EXTERNAL_PEXSI=ON"]
         if '-use_mpi_iallgather' in self.spec:
             args += ["-DUSE_MPI_IALLGATHER=OFF"]
 

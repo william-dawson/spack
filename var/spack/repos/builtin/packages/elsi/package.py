@@ -28,7 +28,7 @@ class Elsi(CMakePackage):
         values=('BGQ', 'AVX', 'AVX2', 'AVX512'), multi=False
     )
     variant(
-        'enable_pexsi', default=True, description='Enable PEXSI support'
+        'enable_pexsi', default=False, description='Enable internal PEXSI build'
     )
     variant(
         'enable_sips', default=False, description='Enable SLEPc-SIPs support'
@@ -53,6 +53,9 @@ class Elsi(CMakePackage):
         'use_mpi_iallgather', default=True,
         description="Use non-blocking collective MPI functions"
     )
+
+    # Conflicts
+    conflicts('+enable_pexsi', '+use_external_pexsi')
 
     # Basic dependencies
     depends_on('blas', type="link")
@@ -86,8 +89,6 @@ class Elsi(CMakePackage):
                 self.spec.variants["elpa2_kernel"].value != "none":
             kernel = self.spec.variants["elpa2_kernel"].value
             args += ["-DELPA2_KERNEL=" + kernel]
-        if '+enable_pexsi' in self.spec:
-            args += ["-DENABLE_PEXSI=ON"]
         if '+enable_sips' in self.spec:
             args += ["-DENABLE_SIPS=ON"]
         if '+use_external_elpa' in self.spec:
@@ -101,7 +102,10 @@ class Elsi(CMakePackage):
         if '+use_external_omm' in self.spec:
             args += ["-DUSE_EXTERNAL_OMM=ON"]
         if '+use_external_pexsi' in self.spec:
+	    # We don't need to ENABLE_PEXSI if the external one is enabled
             args += ["-DUSE_EXTERNAL_PEXSI=ON"]
+        elif '+enable_pexsi' in self.spec:
+            args += ["-DENABLE_PEXSI=ON"]
         if '-use_mpi_iallgather' in self.spec:
             args += ["-DUSE_MPI_IALLGATHER=OFF"]
 

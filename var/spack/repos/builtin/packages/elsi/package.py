@@ -28,7 +28,7 @@ class Elsi(CMakePackage):
         values=('BGQ', 'AVX', 'AVX2', 'AVX512'), multi=False
     )
     variant(
-        'enable_pexsi', default=False, description='Enable PEXSI support'
+        'enable_pexsi', default=True, description='Enable PEXSI support'
     )
     variant(
         'enable_sips', default=False, description='Enable SLEPc-SIPs support'
